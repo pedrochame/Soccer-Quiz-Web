@@ -1,0 +1,5 @@
+controller/__pycache__/
+model/__pycache__
+DAO/__pycache__
+venv/
+questions.csv
