@@ -6,11 +6,10 @@ class QuestionDAO:
         pass
 
     def getQuestions(self):
-        conexao = sqlite3.connect("ban1co.db")
-        if conexao.Error: return None
+        conexao = sqlite3.connect("banco.db")
+        registros = conexao.cursor().execute("select * from questions").fetchall()
         questions = []
-        if conexao == True:
-            registros = conexao.cursor().execute("select * from questions").fetchall()
-            for r in registros: questions.append(Question(r[2],r[3],r[4],r[5],r[6]).toJSON())
-            conexao.close()
+        for r in registros: 
+            questions.append(Question(r[2],r[3],r[4],r[5],r[6]).toJSON())
+        conexao.close()
         return questions
