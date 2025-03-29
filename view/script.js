@@ -1,7 +1,38 @@
+// Configuração: Rotas da API
+API_PATH_QUESTOES = "http://127.0.0.1:5000/questoes";
+API_PATH_REGISTROS = "http://127.0.0.1:5000/registros";
+NUM_QUESTOES = 5;
+
+//Código HTML a ser exibido na área de Início
+DIV_INICIO = "<div class='container' id='areaInicio'><div><input type='text' class= 'form-control' id='nome' placeholder='Digite seu nome'></div><div><input class='btn btn-primary' type='submit' id='btEnviarNome' value='JOGAR'></input></div></div>";
+
+//Código HTML a ser exibido na área de jogo
+DIV_JOGO = "<div class='container border' id='areaJogo'>";
+["progresso","questao"].forEach(i => {
+  DIV_JOGO += "<p id=\""+i+"\"></p>";
+});
+
+for(let i=0;i<4;i++){
+DIV_JOGO+="<div><input type='button' class='w-100 btn alternativa' id='alternativa"+i+"'></div>";
+}
+
+DIV_JOGO += "</div>";
+
+//Código HTML a ser exibido quando o jogo termina
+DIV_FIM = "<div id='areaFim'>";
+DIV_FIM += "<p>Fim de Jogo</p>";
+DIV_FIM += "<p id='areaAcertos'></p>";
+DIV_FIM += "<input class='btn btn-primary' type='button' id='btJogarNovamente' value='JOGAR NOVAMENTE'>";
+DIV_FIM += "</div>";
+
+//Código HTML a ser exibido quando não é possível consultar a API
+DIV_ERRO = "<div id=\"areaErro\"><p>Não foi possível consultar a API de questões!</p></div>";
+
+// Função que faz a requisição à API e retorna um JSON com as questões
 async function ConsultaAPI() {
 
   try {
-    const response = await fetch("http://127.0.0.1:5000/questions");
+    const response = await fetch(API_PATH_QUESTOES);
     if (!response.ok) {
       throw new Error(`Erro HTTP! Status: ${response.status}`);
     }
@@ -12,7 +43,6 @@ async function ConsultaAPI() {
 
   } catch (error) {
     console.error("Erro ao buscar os dados da API:", error);
-    return [];
   }
 }
 
@@ -35,34 +65,43 @@ function embaralhaVetor(vetor){
 
 // Função principal que espera os dados antes de continuar
 async function main() {
-  questoes = await ConsultaAPI(); // Aguarda a requisição antes de continuar
 
-  if (questoes) {
-    document.querySelector("#areaJogo").hidden = false;
-    document.querySelector("#areaFim").hidden = true;
-    await jogo(questoes);
-    document.querySelector("#areaJogo").hidden = true;
-    document.querySelector("#areaFim").hidden = false;
+questoes = await ConsultaAPI(); // Aguarda a requisição antes de continuar
+
+if (questoes) {
+
+    document.querySelector("#corpo").innerHTML = DIV_INICIO;
+    let nomeJogador = await esperarEnvioNome();
+    console.log("Nome do jogador: "+nomeJogador);
+
+
+    document.querySelector("#corpo").innerHTML = DIV_JOGO;
+    pontuacaoJogador = await jogo(questoes);
     console.log("Fim de Jogo!");
+
+    document.querySelector("#corpo").innerHTML = DIV_FIM;
+    document.querySelector("#areaAcertos").innerHTML = "Você acertou "+pontuacaoJogador+" de "+NUM_QUESTOES+" questões!";
+    await enviarRegistroDeJogo(nomeJogador,pontuacaoJogador);
+    await exibirRanking();
+    await esperarJogarNovamente();
+    main();
+
   } else {
     console.log("Falha ao carregar os dados.");
+    document.querySelector("#corpo").innerHTML = DIV_ERRO;
   }
-}
 
+}
 async function jogo(questoesAPI){
   let questoes = embaralhaVetor(questoesAPI);
   let acertos = 0;
-  let i = 0;
-  let numQuestoes = 5;
 
-  while(i<numQuestoes){
-    document.querySelector("#desempenho").textContent = "Desempenho: "+acertos+" acertos";
-    document.querySelector("#progresso").textContent = "Progresso: "+(i+1)+"/"+numQuestoes;
-    acertos += await exibeQuestao(questoes[i]);
-    i += 1;
-    document.querySelector("#desempenho").textContent = "Desempenho: "+acertos+" acertos";
-    document.querySelector("#progresso").textContent = "Progresso: "+(i+1)+"/"+numQuestoes;
+  for(let i=1;i<=NUM_QUESTOES;i++){
+    document.querySelector("#progresso").textContent = "Questão "+i+" de "+NUM_QUESTOES;
+    acertos += await exibeQuestao(questoes[i-1]);
   }
+
+  return acertos;
 
 }
 
@@ -104,5 +143,120 @@ function esperarClique(botoes) {
   });
 }
 
-// Chama a função principal
+function esperarEnvioNome() {
+  let campoNome = document.querySelector("#nome");
+  let btEnviarNome = document.querySelector("#btEnviarNome");
+
+  return new Promise((resolve) => {
+    btEnviarNome.addEventListener("click", () => {
+        if(campoNome.value.trim()!=""){
+        resolve(campoNome.value);
+        }
+    }, { once: true });
+  });
+
+}
+
+function esperarJogarNovamente() {
+
+  let btJogarNovamente = document.querySelector("#btJogarNovamente");
+
+  return new Promise((resolve) => {
+      btJogarNovamente.addEventListener("click", () => resolve(), { once: true });
+  });
+}
+
+
+// Função que vai fazer a requisição com a API enviando os dados de registro do jogador
+async function enviarRegistroDeJogo(nomeJogador,pontosJogador) {
+
+    let response = await fetch(API_PATH_REGISTROS, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ 
+        name : nomeJogador, 
+        score : pontosJogador,
+      })
+    });
+    
+    let r = await response.json();
+    console.log(r);
+
+}
+
+async function exibirRanking(){
+  
+  let registros = await ConsultaAPIRanking();
+
+  console.log(registros);
+
+  DIV_RANKING = "<div id='areaRanking'><table class='table table-bordered'>";
+
+
+  if(registros.length>=0){
+    let campos = Object.keys(registros[0]);
+ 
+DIV_RANKING += "<thead>";
+
+  campos.forEach(campo => {
+    let campoLabel = campo;
+      switch(campo){
+        case "name": campoLabel = "Nome";break;
+        case "score" : campoLabel = "Pontuação";break;
+        case "date" : campoLabel = "Data";break;
+      }
+    DIV_RANKING+="<th>";
+    DIV_RANKING+=campoLabel;
+    DIV_RANKING+="</th>";
+  });
+
+  DIV_RANKING+="</thead>";
+
+  for(let i=0; i<registros.length; i++){
+    DIV_RANKING+="<tr>";
+    campos.forEach(campo => {
+      DIV_RANKING+="<td>";
+      
+      let elemento = registros[i][campo];
+      if(campo=="date"){
+        let agora = new Date(elemento.replace(" ","T")+"Z");
+        DIV_RANKING+=agora.toLocaleString().replace(","," - ").slice(0,-3);
+      }else{
+          DIV_RANKING+=elemento;
+      }
+      DIV_RANKING+="</td>";
+    });
+    DIV_RANKING+="</tr>";
+  }
+
+  DIV_RANKING+="</table></div>";
+
+}else{
+DIV_RANKING+= "</table></div>";
+}
+
+  let x = document.createElement("div");
+  x.innerHTML = DIV_RANKING;
+  document.querySelector("#areaFim").appendChild(x);
+
+}
+
+// Função que vai fazer a requisição com a API enviando os dados de registro do jogador
+async function ConsultaAPIRanking() {
+
+  try {
+    const response = await fetch(API_PATH_REGISTROS);
+    if (!response.ok) {
+      throw new Error(`Erro HTTP! Status: ${response.status}`);
+    }
+    
+    const dados = await response.json();
+    return dados;
+
+  } catch (error) {
+    console.error("Erro ao buscar os dados da API:", error);
+  }
+}
+
+//Programa Principal
 main();

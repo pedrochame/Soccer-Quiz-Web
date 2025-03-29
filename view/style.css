@@ -1,0 +1,9 @@
+.btn{
+    border: 2px solid black;
+}
+.alternativa:hover{
+    border: 2px solid blue;
+}
+.alternativa{
+    border: 2px solid transparent;
+}

@@ -1,1 +1,2 @@
 from .questionController import QuestionController
+from .rankingController import RankingController
