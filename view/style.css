@@ -6,4 +6,20 @@
 }
 .alternativa{
     border: 2px solid transparent;
+    white-space: normal;
+    word-wrap: break-word;
+}
+#corpo{
+    height:100vh;
+    background-image: url("../wallpaper.jpg");
+}
+.btJogar{
+    border: 2px solid transparent;
+}
+.btJogar:hover{
+    border: 2px solid black;
+}
+#txtFim{
+}
+#areaAcertos{
 }

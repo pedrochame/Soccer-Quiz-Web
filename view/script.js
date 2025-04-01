@@ -4,10 +4,10 @@ API_PATH_REGISTROS = "http://127.0.0.1:5000/registros";
 NUM_QUESTOES = 5;
 
 //Código HTML a ser exibido na área de Início
-DIV_INICIO = "<div class='container' id='areaInicio'><div><input type='text' class= 'form-control' id='nome' placeholder='Digite seu nome'></div><div><input class='btn btn-primary' type='submit' id='btEnviarNome' value='JOGAR'></input></div></div>";
+DIV_INICIO = "<div class='container' id='areaInicio'><div class='p-3'><input type='text' class= 'form-control' id='nome' placeholder='Digite seu nome'></div><div class='p-3 d-flex justify-content-center'><input class='btn btn-primary btJogar' type='submit' id='btEnviarNome' value='JOGAR'></input></div></div>";
 
 //Código HTML a ser exibido na área de jogo
-DIV_JOGO = "<div class='container border' id='areaJogo'>";
+DIV_JOGO = "<div class='container' id='areaJogo'>";
 ["progresso","questao"].forEach(i => {
   DIV_JOGO += "<p id=\""+i+"\"></p>";
 });
@@ -19,14 +19,16 @@ DIV_JOGO+="<div><input type='button' class='w-100 btn alternativa' id='alternati
 DIV_JOGO += "</div>";
 
 //Código HTML a ser exibido quando o jogo termina
-DIV_FIM = "<div id='areaFim'>";
-DIV_FIM += "<p>Fim de Jogo</p>";
-DIV_FIM += "<p id='areaAcertos'></p>";
-DIV_FIM += "<input class='btn btn-primary' type='button' id='btJogarNovamente' value='JOGAR NOVAMENTE'>";
+DIV_FIM = "<div class='container align-items-center' id='areaFim'>";
+DIV_FIM += "<div class='d-flex justify-content-center'><b id='txtFim'>FIM DE JOGO!</b></div>";
+DIV_FIM += "<div class='d-flex justify-content-center'><p id='areaAcertos'></p></div>";
+DIV_FIM += "<div class='d-flex justify-content-center'><input class='btn btn-primary btJogar'type='button' id='btJogarNovamente' value='JOGAR NOVAMENTE'></div>";
 DIV_FIM += "</div>";
 
+
+
 //Código HTML a ser exibido quando não é possível consultar a API
-DIV_ERRO = "<div id=\"areaErro\"><p>Não foi possível consultar a API de questões!</p></div>";
+DIV_ERRO = "<div class='container d-flex justify-content-center' id='areaErro'><div class='text-black p-3 w-90 text-break'><p>Não foi possível consultar a API de questões!</p></div></div>";
 
 // Função que faz a requisição à API e retorna um JSON com as questões
 async function ConsultaAPI() {
@@ -71,6 +73,7 @@ questoes = await ConsultaAPI(); // Aguarda a requisição antes de continuar
 if (questoes) {
 
     document.querySelector("#corpo").innerHTML = DIV_INICIO;
+    document.querySelector("#corpo").style="height:100vh;";
     let nomeJogador = await esperarEnvioNome();
     console.log("Nome do jogador: "+nomeJogador);
 
@@ -190,7 +193,7 @@ async function exibirRanking(){
 
   console.log(registros);
 
-  DIV_RANKING = "<div id='areaRanking'><table class='table table-bordered'>";
+  DIV_RANKING = "<div id='areaRanking'><table class='table m-2'>";
 
 
   if(registros.length>=0){
@@ -235,9 +238,10 @@ DIV_RANKING += "<thead>";
 DIV_RANKING+= "</table></div>";
 }
 
-  let x = document.createElement("div");
-  x.innerHTML = DIV_RANKING;
-  document.querySelector("#areaFim").appendChild(x);
+  let divRank = document.createElement("div");
+  divRank.innerHTML = DIV_RANKING;
+  document.querySelector("#areaFim").appendChild(divRank);
+  document.querySelector("#corpo").style="height:auto;";
 
 }
 
