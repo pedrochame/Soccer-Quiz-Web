@@ -1,7 +1,10 @@
 import sqlite3
 from model import Ranking
 
-CAMINHO_BANCO = "backend/banco.db"
+from pathlib import Path
+# Define o caminho do arquivo baseado na localização do script
+base_dir = Path(__file__).parent.parent  # Pega o diretório do script atual
+CAMINHO_BANCO = (base_dir / "banco.db").resolve()
 
 class RankingDAO:
     def __init__(self):

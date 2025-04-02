@@ -1,7 +1,10 @@
 import sqlite3
 from model import Question
 
-CAMINHO_BANCO = "backend/banco.db"
+from pathlib import Path
+# Define o caminho do arquivo baseado na localização do script
+base_dir = Path(__file__).parent.parent  # Pega o diretório do script atual
+CAMINHO_BANCO = (base_dir / "banco.db").resolve()
 
 class QuestionDAO:
     def __init__(self):
