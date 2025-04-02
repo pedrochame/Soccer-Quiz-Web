@@ -87,7 +87,7 @@ if (questoes) {
     await enviarRegistroDeJogo(nomeJogador,pontuacaoJogador);
     await exibirRanking();
     await esperarJogarNovamente();
-    main();
+    window.location.reload();
 
   } else {
     console.log("Falha ao carregar os dados.");

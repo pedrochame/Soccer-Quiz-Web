@@ -12,6 +12,7 @@
 #corpo{
     height:100vh;
     background-image: url("../wallpaper.jpg");
+    background-size:cover;
 }
 .btJogar{
     border: 2px solid transparent;
@@ -22,4 +23,7 @@
 #txtFim{
 }
 #areaAcertos{
+}
+p{
+    font-weight: bold;
 }
