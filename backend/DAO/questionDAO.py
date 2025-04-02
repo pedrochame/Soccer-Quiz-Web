@@ -1,16 +1,14 @@
 import sqlite3
 from model import Question
 
-import os
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))  # Obtém o caminho do script
-DB_PATH = os.path.join(BASE_DIR, "../banco.db")  # Caminho absoluto
+CAMINHO_BANCO = "backend/banco.db"
 
 class QuestionDAO:
     def __init__(self):
         pass
 
     def getQuestions(self):
-        conexao = sqlite3.connect(DB_PATH)
+        conexao = sqlite3.connect(CAMINHO_BANCO)
         registros = conexao.cursor().execute("select * from questions").fetchall()
         questions = []
         for r in registros: 
