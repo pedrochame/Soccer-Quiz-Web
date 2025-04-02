@@ -6,7 +6,7 @@ class QuestionDAO:
         pass
 
     def getQuestions(self):
-        conexao = sqlite3.connect("banco.db")
+        conexao = sqlite3.connect("backend/banco.db")
         registros = conexao.cursor().execute("select * from questions").fetchall()
         questions = []
         for r in registros: 

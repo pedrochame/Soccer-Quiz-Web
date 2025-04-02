@@ -6,7 +6,7 @@ class RankingDAO:
         pass
 
     def getRanking(self):
-        conexao = sqlite3.connect("banco.db")
+        conexao = sqlite3.connect("backend/banco.db")
         registros = conexao.cursor().execute("select * from ranking order by score desc").fetchall()
         rankings = []
         for r in registros:
@@ -17,7 +17,7 @@ class RankingDAO:
     
     def createRanking(self, name, score):
         try:
-            conexao = sqlite3.connect("banco.db")
+            conexao = sqlite3.connect("backend/banco.db")
             conexao.cursor().execute("insert into ranking(name,score) values(?,?)",(name,score))       
             conexao.commit()
             conexao.close()

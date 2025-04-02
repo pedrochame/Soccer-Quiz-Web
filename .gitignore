@@ -1,6 +1,4 @@
-controller/__pycache__/
-model/__pycache__
-DAO/__pycache__
-venv/
-questions.csv
-teste.html
+backend/controller/__pycache__/
+backend/model/__pycache__
+backend/DAO/__pycache__
+backend/venv/
