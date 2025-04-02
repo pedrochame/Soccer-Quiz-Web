@@ -1,6 +1,6 @@
 // Configuração: Rotas da API
-API_PATH_QUESTOES = "http://127.0.0.1:5000/questoes";
-API_PATH_REGISTROS = "http://127.0.0.1:5000/registros";
+API_PATH_QUESTOES = "https://soccer-quiz-web.onrender.com/questoes";
+API_PATH_REGISTROS = "https://soccer-quiz-web.onrender.com/registros";
 
 // Configuração do jogo: Número de questões
 NUM_QUESTOES = 5;
