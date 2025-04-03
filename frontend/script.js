@@ -1,9 +1,9 @@
 // Configuração: Rotas da API
-API_PATH_QUESTOES = "https://soccer-quiz-web.onrender.com/questoes";
-API_PATH_REGISTROS = "https://soccer-quiz-web.onrender.com/registros";
+API_PATH_QUESTOES = "http://127.0.0.1:5000/questoes";
+API_PATH_REGISTROS = "http://127.0.0.1:5000/registros";
 
 // Configuração do jogo: Número de questões
-NUM_QUESTOES = 5;
+NUM_QUESTOES = 10;
 
 //Código HTML a ser exibido na área de Início
 DIV_INICIO = "<div class='container' id='areaInicio'><div class='p-3'><input type='text' class= 'form-control' id='nome' placeholder='Digite seu nome'></div><div class='p-3 d-flex justify-content-center'><input class='btn btn-primary btJogar' type='submit' id='btEnviarNome' value='JOGAR'></input></div></div>";
