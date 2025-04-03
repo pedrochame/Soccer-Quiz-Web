@@ -75,6 +75,6 @@ python app.py
 - Como **não há login**, um jogador pode jogar várias vezes com nomes diferentes.
 
 ## 🚀 **Futuras melhorias**  
-✅ Melhorar o design da interface do jogo.
+✅ Melhorar o design da interface do jogo.  
 ✅ Separar as questões por temas.  
 ✅ Implementar um sistema de login.
